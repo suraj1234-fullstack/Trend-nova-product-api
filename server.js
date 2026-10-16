@@ -11,6 +11,9 @@ app.use(express.json());
 
 // 1. MongoDB Local Connection (Compass connection ke hisab se)
 const MONGO_URI =  'mongodb://localhost:27017/trendnova';
+app.get('/', (req, res) => {
+  res.send('TrendNova API is running successfully!');
+});
 
 mongoose.connect(MONGO_URI)
 .then(async () => {
