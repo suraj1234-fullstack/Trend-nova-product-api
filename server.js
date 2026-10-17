@@ -87,7 +87,65 @@ const initialProducts = [
   { id: 47, name: "Kids Party Wear Trouser Pants", category: "Kids", subCategory: "Bottomwear", price: 799, rating: 4.2, image: "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?auto=format&fit=crop&w=500&q=80" },
   { id: 48, name: "Kids Denim Dungaree Overalls", category: "Kids", subCategory: "Bottomwear", price: 999, rating: 4.6, image: "https://images.unsplash.com/photo-1542272604-787c3835535d?auto=format&fit=crop&w=500&q=80" },
   { id: 49, name: "Kids Sports Running Lowers", category: "Kids", subCategory: "Bottomwear", price: 499, rating: 4.4, image: "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=500&q=80" },
-  { id: 50, name: "Kids Fleece Lined Winter Pants", category: "Kids", subCategory: "Bottomwear", price: 849, rating: 4.7, image: "https://images.unsplash.com/photo-1517445312882-bc9910d016b7?auto=format&fit=crop&w=500&q=80" }
+  { id: 50, name: "Kids Fleece Lined Winter Pants", category: "Kids", subCategory: "Bottomwear", price: 849, rating: 4.7, image: "https://images.unsplash.com/photo-1517445312882-bc9910d016b7?auto=format&fit=crop&w=500&q=80" },
+  // --- MEN HALF-SLEEVE T-SHIRTS ---
+  { id: 1, name: "Men Solid Black Cotton T-Shirt", category: "Men", subCategory: "Topwear", price: 499, rating: 4.4, image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=500&q=80" },
+  { id: 2, name: "Men Navy Blue Casual T-Shirt", category: "Men", subCategory: "Topwear", price: 449, rating: 4.2, image: "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&w=500&q=80" },
+  { id: 3, name: "Men Olive Green Gym T-Shirt", category: "Men", subCategory: "Topwear", price: 599, rating: 4.6, image: "https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=500&q=80" },
+  { id: 4, name: "Men White Oversized Graphic Tee", category: "Men", subCategory: "Topwear", price: 699, rating: 4.7, image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=500&q=80" },
+  { id: 5, name: "Men Maroon Striped Polo T-Shirt", category: "Men", subCategory: "Topwear", price: 799, rating: 4.3, image: "https://images.unsplash.com/photo-1586790170083-2f9ceadc732d?auto=format&fit=crop&w=500&q=80" },
+  { id: 6, name: "Men Charcoal Grey Plain T-Shirt", category: "Men", subCategory: "Topwear", price: 449, rating: 4.1, image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=500&q=80" },
+  { id: 7, name: "Men Mustard Yellow Casual Tee", category: "Men", subCategory: "Topwear", price: 499, rating: 4.0, image: "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&w=500&q=80" },
+  { id: 8, name: "Men Teal Blue Running T-Shirt", category: "Men", subCategory: "Topwear", price: 549, rating: 4.5, image: "https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=500&q=80" },
+  { id: 9, name: "Men Beige Premium Cotton T-Shirt", category: "Men", subCategory: "Topwear", price: 649, rating: 4.6, image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=500&q=80" },
+  { id: 10, name: "Men Royal Blue Sports Jersey Tee", category: "Men", subCategory: "Topwear", price: 599, rating: 4.3, image: "https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=500&q=80" },
+
+  { id: 11, name: "Men Sky Blue Summer T-Shirt", category: "Men", subCategory: "Topwear", price: 499, rating: 4.2, image: "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&w=500&q=80" },
+  { id: 12, name: "Men Red Athletic Dry-Fit Tee", category: "Men", subCategory: "Topwear", price: 599, rating: 4.5, image: "https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=500&q=80" },
+  { id: 13, name: "Men Hunter Green Vintage T-Shirt", category: "Men", subCategory: "Topwear", price: 549, rating: 4.4, image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=500&q=80" },
+  { id: 14, name: "Men Classic White Polo Shirt", category: "Men", subCategory: "Topwear", price: 799, rating: 4.7, image: "https://images.unsplash.com/photo-1586790170083-2f9ceadc732d?auto=format&fit=crop&w=500&q=80" },
+  { id: 15, name: "Men Dark Brown Plain Tee", category: "Men", subCategory: "Topwear", price: 479, rating: 4.1, image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=500&q=80" },
+  { id: 16, name: "Men Orange Gym Workout T-Shirt", category: "Men", subCategory: "Topwear", price: 529, rating: 4.3, image: "https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=500&q=80" },
+  { id: 17, name: "Men Pink Pastel Casual T-Shirt", category: "Men", subCategory: "Topwear", price: 499, rating: 4.0, image: "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&w=500&q=80" },
+  { id: 18, name: "Men Lavender Oversized T-Shirt", category: "Men", subCategory: "Topwear", price: 699, rating: 4.6, image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=500&q=80" },
+  { id: 19, name: "Men Emerald Green Polo Tee", category: "Men", subCategory: "Topwear", price: 749, rating: 4.5, image: "https://images.unsplash.com/photo-1586790170083-2f9ceadc732d?auto=format&fit=crop&w=500&q=80" },
+  { id: 20, name: "Men Rust Orange Cotton Tee", category: "Men", subCategory: "Topwear", price: 519, rating: 4.2, image: "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&w=500&q=80" },
+
+  // --- WOMEN HALF-SLEEVE T-SHIRTS ---
+  { id: 21, name: "Women White Casual Cotton T-Shirt", category: "Women", subCategory: "Topwear", price: 449, rating: 4.5, image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=500&q=80" },
+  { id: 22, name: "Women Pastel Pink Oversized Tee", category: "Women", subCategory: "Topwear", price: 649, rating: 4.7, image: "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&w=500&q=80" },
+  { id: 23, name: "Women Black Crop Top T-Shirt", category: "Women", subCategory: "Topwear", price: 399, rating: 4.6, image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=500&q=80" },
+  { id: 24, name: "Women Lavender Printed Tee", category: "Women", subCategory: "Topwear", price: 499, rating: 4.3, image: "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&w=500&q=80" },
+  { id: 25, name: "Women Mint Green Gym T-Shirt", category: "Women", subCategory: "Topwear", price: 549, rating: 4.4, image: "https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=500&q=80" },
+  { id: 26, name: "Women Yellow Striped Casual Tee", category: "Women", subCategory: "Topwear", price: 479, rating: 4.2, image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=500&q=80" },
+  { id: 27, name: "Women Maroon Ribbed Crop Top", category: "Women", subCategory: "Topwear", price: 450, rating: 4.5, image: "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&w=500&q=80" },
+  { id: 28, name: "Women Peach Oversized Cotton Tee", category: "Women", subCategory: "Topwear", price: 699, rating: 4.8, image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=500&q=80" },
+  { id: 29, name: "Women Navy Blue Sports T-Shirt", category: "Women", subCategory: "Topwear", price: 529, rating: 4.3, image: "https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=500&q=80" },
+  { id: 30, name: "Women Grey Melange Basic Tee", category: "Women", subCategory: "Topwear", price: 419, rating: 4.1, image: "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&w=500&q=80" },
+
+  { id: 31, name: "Women Teal Blue Graphic T-Shirt", category: "Women", subCategory: "Topwear", price: 599, rating: 4.4, image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=500&q=80" },
+  { id: 32, name: "Women Red Casual Summer Tee", category: "Women", subCategory: "Topwear", price: 499, rating: 4.2, image: "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&w=500&q=80" },
+  { id: 33, name: "Women Olive Green Cargo Pocket Tee", category: "Women", subCategory: "Topwear", price: 649, rating: 4.6, image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=500&q=80" },
+  { id: 34, name: "Women Mustard Yellow Crop Top", category: "Women", subCategory: "Topwear", price: 399, rating: 4.0, image: "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&w=500&q=80" },
+  { id: 35, name: "Women Sky Blue Polo T-Shirt", category: "Women", subCategory: "Topwear", price: 699, rating: 4.5, image: "https://images.unsplash.com/photo-1586790170083-2f9ceadc732d?auto=format&fit=crop&w=500&q=80" },
+  { id: 36, name: "Women Beige Minimalist Cotton Tee", category: "Women", subCategory: "Topwear", price: 549, rating: 4.3, image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=500&q=80" },
+  { id: 37, name: "Women Purple Tie-Dye T-Shirt", category: "Women", subCategory: "Topwear", price: 629, rating: 4.7, image: "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&w=500&q=80" },
+  { id: 38, name: "Women Coral Pink Sports Tee", category: "Women", subCategory: "Topwear", price: 499, rating: 4.1, image: "https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=500&q=80" },
+  { id: 39, name: "Women Charcoal Grey Oversized Tee", category: "Women", subCategory: "Topwear", price: 679, rating: 4.6, image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=500&q=80" },
+  { id: 40, name: "Women Emerald Green Cotton Top", category: "Women", subCategory: "Topwear", price: 519, rating: 4.4, image: "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&w=500&q=80" },
+
+  // --- KIDS HALF-SLEEVE T-SHIRTS ---
+  { id: 41, name: "Kids Superhero Cartoon Printed Tee", category: "Kids", subCategory: "Topwear", price: 349, rating: 4.6, image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=500&q=80" },
+  { id: 42, name: "Kids Colorful Striped Cotton T-Shirt", category: "Kids", subCategory: "Topwear", price: 299, rating: 4.4, image: "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&w=500&q=80" },
+  { id: 43, name: "Kids Bright Yellow Casual Tee", category: "Kids", subCategory: "Topwear", price: 279, rating: 4.3, image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=500&q=80" },
+  { id: 44, name: "Kids Royal Blue Sports T-Shirt", category: "Kids", subCategory: "Topwear", price: 329, rating: 4.5, image: "https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=500&q=80" },
+  { id: 45, name: "Kids Dino Printed Green T-Shirt", category: "Kids", subCategory: "Topwear", price: 350, rating: 4.8, image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=500&q=80" },
+  { id: 46, name: "Baby Infant Soft Cotton Cute Tee", category: "Kids", subCategory: "Topwear", price: 249, rating: 4.7, image: "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&w=500&q=80" },
+  { id: 47, name: "Kids Red & White Baseball Tee", category: "Kids", subCategory: "Topwear", price: 399, rating: 4.2, image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=500&q=80" },
+  { id: 48, name: "Kids Orange Summer Cool T-Shirt", category: "Kids", subCategory: "Topwear", price: 299, rating: 4.4, image: "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&w=500&q=80" },
+  { id: 49, name: "Kids Space Explorer Printed Tee", category: "Kids", subCategory: "Topwear", price: 379, rating: 4.6, image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=500&q=80" },
+  { id: 50, name: "Kids Classic White School Sports Tee", category: "Kids", subCategory: "Topwear", price: 319, rating: 4.5, image: "https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=500&q=80" }
+
 ];
 
 // MongoDB Connection & Auto-Refresh / Seeding Logic
