@@ -9,31 +9,13 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// 1. MongoDB Local Connection (Compass connection ke hisab se)
+// MongoDB Connection URI
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/trendnova';
 app.get('/', (req, res) => {
   res.send('TrendNova API is running successfully!');
 });
 
-mongoose.connect(MONGO_URI)
-.then(async () => {
-  console.log('MongoDB Connected Successfully to TrendNova Database!');
-  
-  try {
-    const count = await Product.countDocuments();
-    if (count === 0) {
-      await Product.insertMany(initialProducts);
-      console.log(`Database auto-created and seeded with ${initialProducts.length} products successfully!`);
-    } else {
-      console.log(`Database already has ${count} products.`);
-    }
-  } catch (err) {
-    console.error('Auto-seeding error:', err);
-  }
-})
-.catch((err) => console.error('MongoDB connection error:', err));
-
-// 2. Product Schema & Model
+// Product Schema & Model
 const productSchema = new mongoose.Schema({
   id: Number,
   name: { type: String, required: true },
@@ -47,8 +29,9 @@ const productSchema = new mongoose.Schema({
 
 const Product = mongoose.model('Product', productSchema);
 
-// 3. Products Data List
-const pantProducts = [
+// Initial/Updated Products Data List
+const initialProducts = [
+  // --- MEN PANTS & JEANS ---
   { id: 1, name: "Men Classic Blue Denim Jeans", category: "Men", subCategory: "Bottomwear", price: 1299, rating: 4.3, image: "https://images.unsplash.com/photo-1542272604-787c3835535d?auto=format&fit=crop&w=500&q=80" },
   { id: 2, name: "Men Slim Fit Cargo Joggers", category: "Men", subCategory: "Bottomwear", price: 1199, rating: 4.2, image: "https://images.unsplash.com/photo-1517445312882-bc9910d016b7?auto=format&fit=crop&w=500&q=80" },
   { id: 3, name: "Men Cotton Track Pants", category: "Men", subCategory: "Bottomwear", price: 799, rating: 4.5, image: "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=500&q=80" },
@@ -107,7 +90,23 @@ const pantProducts = [
   { id: 50, name: "Kids Fleece Lined Winter Pants", category: "Kids", subCategory: "Bottomwear", price: 849, rating: 4.7, image: "https://images.unsplash.com/photo-1517445312882-bc9910d016b7?auto=format&fit=crop&w=500&q=80" }
 ];
 
-// 4. API Endpoints
+// MongoDB Connection & Auto-Refresh / Seeding Logic
+mongoose.connect(MONGO_URI)
+.then(async () => {
+  console.log('MongoDB Connected Successfully to TrendNova Database!');
+  
+  try {
+    // पुराना सारा डेटा हटाकर एकदम नया डेटा फ्रेश डाल देगा ताकि बार-बार मैनुअली डिलीट न करना पड़े
+    await Product.deleteMany({});
+    await Product.insertMany(initialProducts);
+    console.log(`Database successfully updated and seeded with ${initialProducts.length} products!`);
+  } catch (err) {
+    console.error('Auto-seeding error:', err);
+  }
+})
+.catch((err) => console.error('MongoDB connection error:', err));
+
+// API Endpoints
 app.get('/api/products', async (req, res) => {
   try {
     const { category, subCategory } = req.query;
