@@ -12,6 +12,164 @@ app.use(express.json());
 // MongoDB Connection URI
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/trendnova';
 app.get('/', (req, res) => {
+  res.send('TrendNova API is running successfully with Massive 1200+ Products Database!');
+});
+
+// Product Schema & Model
+const productSchema = new mongoose.Schema({
+  id: Number,
+  name: { type: String, required: true },
+  category: { type: String, required: true },
+  subCategory: { type: String, required: true },
+  price: { type: Number, required: true },
+  rating: Number,
+  image: { type: String, required: true },
+  inStock: { type: Boolean, default: true }
+});
+
+const Product = mongoose.model('Product', productSchema);
+
+// Categories & Extensive Subcategories & Names Pool
+const categories = ["Men", "Women", "Kids", "Footwear", "Beauty", "Home & Kitchen"];
+
+const subCategoriesMap = {
+  "Men": ["Topwear", "Bottomwear", "Winterwear", "Ethnic", "Sportswear"],
+  "Women": ["Topwear", "Bottomwear", "Ethnic", "Western Dress", "Lingerie"],
+  "Kids": ["Topwear", "Bottomwear", "Ethnic", "Toys", "Winterwear"],
+  "Footwear": ["Casual Shoes", "Sports Shoes", "Formal Shoes", "Sandals", "Flip Flops"],
+  "Beauty": ["Skincare", "Makeup", "Haircare", "Fragrance", "Bath & Body"],
+  "Home & Kitchen": ["Decor", "Kitchenware", "Bedding", "Lighting", "Storage & Organization"]
+};
+
+// Variety of Adjectives & Base Names for Massive Unique Combinations
+const nameAdjectives = [
+  "Premium", "Classic", "Modern", "Stylish", "Luxury", "Designer", "Casual", "Comfortable", 
+  "Trendy", "Elegant", "Vibrant", "Soft", "Durable", "Handcrafted", "Exquisite", "Royal", 
+  "Urban", "Vintage", "Minimalist", "Heavy-Duty", "Glossy", "Matte", "Organic", "Pure"
+];
+
+const imagePool = {
+  "Topwear": "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=500&q=80",
+  "Bottomwear": "https://images.unsplash.com/photo-1542272604-787c3835535d?auto=format&fit=crop&w=500&q=80",
+  "Winterwear": "https://images.unsplash.com/photo-1543076447-215ad9ba6923?auto=format&fit=crop&w=500&q=80",
+  "Ethnic": "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=500&q=80",
+  "Sportswear": "https://images.unsplash.com/photo-1517445312882-bc9910d016b7?auto=format&fit=crop&w=500&q=80",
+  "Western Dress": "https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=500&q=80",
+  "Lingerie": "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=500&q=80",
+  "Toys": "https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?auto=format&fit=crop&w=500&q=80",
+  "Casual Shoes": "https://images.unsplash.com/photo-1560769629-975ec94e6a86?auto=format&fit=crop&w=500&q=80",
+  "Sports Shoes": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=500&q=80",
+  "Formal Shoes": "https://images.unsplash.com/photo-1533867617858-e7d97e0afd8b?auto=format&fit=crop&w=500&q=80",
+  "Sandals": "https://images.unsplash.com/photo-1603808033192-082d6939d3e1?auto=format&fit=crop&w=500&q=80",
+  "Flip Flops": "https://images.unsplash.com/photo-1575537302964-96cd47c06b1b?auto=format&fit=crop&w=500&q=80",
+  "Skincare": "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=500&q=80",
+  "Makeup": "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=500&q=80",
+  "Haircare": "https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?auto=format&fit=crop&w=500&q=80",
+  "Fragrance": "https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&w=500&q=80",
+  "Bath & Body": "https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?auto=format&fit=crop&w=500&q=80",
+  "Decor": "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=500&q=80",
+  "Kitchenware": "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=500&q=80",
+  "Bedding": "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=500&q=80",
+  "Lighting": "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=500&q=80",
+  "Storage & Organization": "https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&w=500&q=80"
+};
+
+let allProducts = [];
+let generatedId = 1;
+
+// Generating massive dataset (1200+ Products: ~200 items per category)
+categories.forEach(cat => {
+  const subCats = subCategoriesMap[cat];
+  subCats.forEach(subCat => {
+    // 45 items per subcategory * 5 subcategories * 6 categories = ~1350 products!
+    for (let i = 1; i <= 45; i++) {
+      const adj = nameAdjectives[(generatedId + i) % nameAdjectives.length];
+      const productName = `${cat} ${adj} ${subCat} Model-${generatedId}`;
+      const priceVal = Math.floor(Math.random() * 3500) + 199;
+      const ratingVal = +(Math.random() * (5.0 - 4.0) + 4.0).toFixed(1);
+      
+      allProducts.push({
+        id: generatedId,
+        name: productName,
+        category: cat,
+        subCategory: subCat,
+        price: priceVal,
+        rating: ratingVal,
+        image: imagePool[subCat] || "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=500&q=80",
+        inStock: true
+      });
+      generatedId++;
+    }
+  });
+});
+
+// MongoDB Connection & Auto-Seeding Logic
+mongoose.connect(MONGO_URI)
+.then(async () => {
+  console.log('MongoDB Connected Successfully to TrendNova Database!');
+  
+  try {
+    await Product.deleteMany({});
+    await Product.insertMany(allProducts);
+    console.log(`Boom! Database successfully loaded with massive ${allProducts.length} unique products!`);
+  } catch (err) {
+    console.error('Auto-seeding error:', err);
+  }
+})
+.catch((err) => console.error('MongoDB connection error:', err));
+
+// API Endpoints
+app.get('/api/products', async (req, res) => {
+  try {
+    const { category, subCategory } = req.query;
+    let filter = {};
+    if (category) filter.category = new RegExp('^' + category + '$', 'i');
+    if (subCategory) filter.subCategory = new RegExp('^' + subCategory + '$', 'i');
+
+    const products = await Product.find(filter);
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch products" });
+  }
+});
+
+app.get('/api/products/search', async (req, res) => {
+  try {
+    const searchQuery = req.query.q;
+    if (!searchQuery) {
+      return res.json([]);
+    }
+
+    const products = await Product.find({
+      $or: [
+        { name: { $regex: searchQuery,$options: 'i' } },
+        { category: { $regex: searchQuery,$options: 'i' } },
+        { subCategory: { $regex: searchQuery,$options: 'i' } }
+      ]
+    });
+
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ error: "Search query failed" });
+  }
+});
+
+app.listen(PORT, () => {
+  console.log(`TrendNova Backend Server is running on port ${PORT}`);
+});{/*import express from 'express';
+import mongoose from 'mongoose';
+import cors from 'cors';
+
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+
+// MongoDB Connection URI
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/trendnova';
+app.get('/', (req, res) => {
   res.send('TrendNova API is running successfully!');
 });
 
@@ -202,4 +360,4 @@ app.get('/api/products/search', async (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`TrendNova Backend Server is running on port ${PORT}`);
-});
+});*/}
