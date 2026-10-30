@@ -46,9 +46,9 @@ const User = mongoose.model('User', userSchema);
 // Passport Google Strategy Configuration
 // (नोट: इसके लिए .env में GOOGLE_CLIENT_ID और GOOGLE_CLIENT_SECRET डालना होगा)
 passport.use(new GoogleStrategy({
-    clientID: process.env.GOOGLE_CLIENT_ID || 'YOUR_GOOGLE_CLIENT_ID',
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'YOUR_GOOGLE_CLIENT_SECRET',
-    callbackURL: '/auth/google/callback'
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: 'https://trend-nova-product-api-2.onrender.com/auth/google/callback' 
   },
   async (accessToken, refreshToken, profile, done) => {
     try {
