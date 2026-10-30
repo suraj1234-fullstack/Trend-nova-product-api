@@ -11,40 +11,49 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET || 'trendnova_secure_jwt_secret_key_123';
 
-// Middleware
+// --- TRUST PROXY (Render के लिए ज़रूरी) ---
+app.set('trust proxy', 1);
+
+// --- CORS CONFIGURATION (Frontend Vercel Domain) ---
 app.use(cors({
-  origin: 'http://localhost:5173', // अपने फ्रंटएंड का ओरिजिन यहाँ डाल सकते हो
+  origin: 'https://trend-nova-nu.vercel.app', 
   credentials: true
 }));
+
 app.use(express.json());
 app.use(helmet());
 
-// Session & Passport Middleware (Google Auth के लिए जरूरी)
+// --- SESSION & PASSPORT MIDDLEWARE (Cross-Domain Cookie Fix) ---
 app.use(session({
   secret: process.env.SESSION_SECRET || 'trendnova_session_secret',
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: false,
+  cookie: {
+    secure: true,      // Render (HTTPS) पर true होना ज़रूरी है
+    sameSite: 'none',  // Vercel और Render के अलग डोमेन होने पर कुकी शेयर करने के लिए
+    maxAge: 24 * 60 * 60 * 1000 // 1 Day
+  }
 }));
+
 app.use(passport.initialize());
 app.use(passport.session());
 
 // MongoDB Connection URI
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/trendnova';
 
-// --- NEW: User Schema & Model for Authentication ---
+// --- User Schema & Model for Authentication ---
 const userSchema = new mongoose.Schema({
   googleId: { type: String, required: true, unique: true },
   name: { type: String, required: true },
   email: { type: String, required: true },
   avatar: String,
-  role: { type: String, enum: ['user', 'admin'], default: 'user' }, // डेटाबेस से सीधे रोल बदल सकते हो
+  role: { type: String, enum: ['user', 'admin'], default: 'user' },
   createdAt: { type: Date, default: Date.now }
 });
 
 const User = mongoose.model('User', userSchema);
 
 // Passport Google Strategy Configuration
-// (नोट: इसके लिए .env में GOOGLE_CLIENT_ID और GOOGLE_CLIENT_SECRET डालना होगा)
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -54,7 +63,7 @@ passport.use(new GoogleStrategy({
     try {
       let user = await User.findOne({ googleId: profile.id });
       if (!user) {
-        // नया यूजर रजिस्टर करें (पहला यूजर या डिफ़ॉल्ट 'user' रोल)
+        // नया यूजर डेटाबेस में सेव करें
         user = new User({
           googleId: profile.id,
           name: profile.displayName,
@@ -86,7 +95,6 @@ passport.deserializeUser(async (id, done) => {
 
 // --- AUTHENTICATION & SECURITY MIDDLEWARES ---
 
-// 1. चेक करेगा कि यूजर लॉग इन है या नहीं (URL से डायरेक्ट एक्सेस रोकने के लिए)
 const ensureAuthenticated = (req, res, next) => {
   if (req.isAuthenticated() || req.headers.authorization) {
     return next();
@@ -94,7 +102,6 @@ const ensureAuthenticated = (req, res, next) => {
   return res.status(401).json({ error: "Unauthorized access! Please sign in first." });
 };
 
-// 2. चेक करेगा कि यूजर 'admin' है या नहीं (सिर्फ एडमिन पैनल के लिए)
 const ensureAdmin = async (req, res, next) => {
   if (req.isAuthenticated() && req.user.role === 'admin') {
     return next();
@@ -103,7 +110,7 @@ const ensureAdmin = async (req, res, next) => {
 };
 
 
-// Product Schema & Model (तुम्हारा पुराना कोड बिल्कुल सुरक्षित)
+// Product Schema & Model
 const productSchema = new mongoose.Schema({
   id: Number,
   name: { type: String, required: true },
@@ -117,9 +124,8 @@ const productSchema = new mongoose.Schema({
 
 const Product = mongoose.model('Product', productSchema);
 
-// Initial/Updated Products Data List (तुम्हारा पूरा 150+ डेटा वैसे का वैसा)
+// Initial Products Data List
 const initialProducts = [
-  // --- MEN PANTS & JEANS ---
   { id: 1, name: "Men Classic Blue Denim Jeans", category: "Men", subCategory: "Bottomwear", price: 1299, rating: 4.3, image: "https://images.unsplash.com/photo-1542272604-787c3835535d?auto=format&fit=crop&w=500&q=80" },
   { id: 2, name: "Men Slim Fit Cargo Joggers", category: "Men", subCategory: "Bottomwear", price: 1199, rating: 4.2, image: "https://images.unsplash.com/photo-1517445312882-bc9910d016b7?auto=format&fit=crop&w=500&q=80" },
   { id: 3, name: "Men Cotton Track Pants", category: "Men", subCategory: "Bottomwear", price: 799, rating: 4.5, image: "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=500&q=80" },
@@ -191,11 +197,10 @@ const initialProducts = [
   // (Note: बाकी प्रोडक्ट्स का डेटा एरर से बचने के लिए उसी तरह बरकरार है)
 ];
 
-// MongoDB Connection & Auto-Refresh / Seeding Logic
+// MongoDB Connection & Seeding Logic
 mongoose.connect(MONGO_URI)
 .then(async () => {
   console.log('MongoDB Connected Successfully to TrendNova Database!');
-  
   try {
     await Product.deleteMany({});
     await Product.insertMany(initialProducts);
@@ -207,7 +212,7 @@ mongoose.connect(MONGO_URI)
 .catch((err) => console.error('MongoDB connection error:', err));
 
 
-// ==================== NEW: AUTHENTICATION API ROUTES ====================
+// ==================== AUTHENTICATION API ROUTES ====================
 
 // 1. Google Auth Trigger Route
 app.get('/auth/google',
@@ -216,10 +221,10 @@ app.get('/auth/google',
 
 // 2. Google Auth Callback Route
 app.get('/auth/google/callback',
-  passport.authenticate('google', { failureRedirect: 'http://localhost:5173/login' }),
+  passport.authenticate('google', { failureRedirect: 'https://trend-nova-nu.vercel.app/' }),
   (req, res) => {
     // सफल लॉगिन के बाद फ्रंटएंड पर रीडायरेक्ट करें
-    res.redirect('https://trend-nova-nu.vercel.app');
+    res.redirect('https://trend-nova-nu.vercel.app/');
   }
 );
 
@@ -240,13 +245,13 @@ app.get('/auth/logout', (req, res, next) => {
   });
 });
 
-// 5. SECURED ADMIN ROUTE (यूआरएल से सीधे नहीं खुलेगा, केवल एडमिन के लिए)
+// 5. SECURED ADMIN ROUTE
 app.get('/api/admin/dashboard-data', ensureAuthenticated, ensureAdmin, (req, res) => {
   res.json({ message: "Welcome to TrendNova Secure Admin Panel", admin: req.user.name });
 });
 
 
-// ==================== EXISTING PRODUCT API ROUTES ====================
+// ==================== PRODUCT API ROUTES ====================
 
 app.get('/api/products', async (req, res) => {
   try {
