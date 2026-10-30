@@ -5,7 +5,7 @@ import { OAuth2Client } from 'google-auth-library';
 
 
 
-const client = new OAuth2Client("YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"); // यहाँ अपनी Google Client ID डालना
+const client = new OAuth2Client("976544929945-qqnb1us9lqmoojtptc1rndcl8olqej6q.apps.googleusercontent.com"); // यहाँ अपनी Google Client ID डालना
 
 // Google Login Route
 export const googleLogin = async (req, res) => {
@@ -15,7 +15,7 @@ export const googleLogin = async (req, res) => {
     // Google token को verify करो
     const ticket = await client.verifyIdToken({
       idToken: token,
-      audience: "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com",
+      audience: "976544929945-qqnb1us9lqmoojtptc1rndcl8olqej6q.apps.googleusercontent.com",
     });
 
     const { name, email } = ticket.getPayload();
