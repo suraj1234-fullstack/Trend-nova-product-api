@@ -219,7 +219,7 @@ app.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: 'http://localhost:5173/login' }),
   (req, res) => {
     // सफल लॉगिन के बाद फ्रंटएंड पर रीडायरेक्ट करें
-    res.redirect('http://localhost:5173/dashboard');
+    res.redirect('https://trend-nova-nu.vercel.app');
   }
 );
 
