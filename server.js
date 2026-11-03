@@ -3,15 +3,13 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import helmet from 'helmet';
 
-
-
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(helmet())
+app.use(helmet());
 
 // MongoDB Connection URI
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://sandhyachoudhary2005_db_user:surajpapa1234xxx@ac-win07dl-shard-00-00.yzckfou.mongodb.net:27017,ac-win07dl-shard-00-01.yzckfou.mongodb.net:27017,ac-win07dl-shard-00-02.yzckfou.mongodb.net:27017/trendnova?ssl=true&replicaSet=atlas-vgh8pd-shard-0&authSource=admin';
@@ -51,8 +49,6 @@ const initialProducts = [
   { id: 148, name: "Core i7 Workstation Laptop 1TB SSD", category: "Electronics", subCategory: "Laptops", price: 84999, rating: 4.8, image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=500&q=80" },
   { id: 149, name: "Entry-Level Everyday Laptop 15.6 Inch", category: "Electronics", subCategory: "Laptops", price: 24999, rating: 4.0, image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=500&q=80" },
   { id: 150, name: "Dual-Screen Premium Creator Laptop", category: "Electronics", subCategory: "Laptops", price: 124999, rating: 4.9, image: "https://images.unsplash.com/photo-1603302576837-37561b2e2302?auto=format&fit=crop&w=500&q=80" }
-
-
 ];
 
 // MongoDB Connection & Auto-Refresh / Seeding Logic
@@ -61,17 +57,24 @@ mongoose.connect(MONGO_URI)
   console.log('MongoDB Connected Successfully to TrendNova Database!');
   
   try {
-    // पुराना सारा डेटा हटाकर एकदम नया डेटा फ्रेश डाल देगा ताकि बार-बार मैनुअली डिलीट न करना पड़े
-    await Product.deleteMany({});
-    await Product.insertMany(initialProducts);
-    console.log(`Database successfully updated and seeded with ${initialProducts.length} products!`);
+    // Note: Agar tu chahta hai ki har baar server restart pe data fresh ho jaye, toh deleteMany rakha hai. 
+    // Par agar admin panel se add kiye hue products bachane hain, toh tu chahe toh is deleteMany ko hata bhi sakta hai.
+    const count = await Product.countDocuments();
+    if (count === 0) {
+      await Product.insertMany(initialProducts);
+      console.log(`Database successfully seeded with ${initialProducts.length} products!`);
+    } else {
+      console.log(`Database already contains ${count} products.`);
+    }
   } catch (err) {
     console.error('Auto-seeding error:', err);
   }
 })
 .catch((err) => console.error('MongoDB connection error:', err));
 
-// API Endpoints
+// --- API ENDPOINTS ---
+
+// 1. Get all products (with category/subCategory filter)
 app.get('/api/products', async (req, res) => {
   try {
     const { category, subCategory } = req.query;
@@ -86,6 +89,50 @@ app.get('/api/products', async (req, res) => {
   }
 });
 
+// 2. Add New Product (POST API for Admin Panel)
+app.post('/api/products', async (req, res) => {
+  try {
+    const { name, price, description, image, category, subCategory, rating } = req.body;
+    
+    const newProduct = new Product({
+      id: Date.now(),
+      name,
+      price,
+      description: description || 'No description',
+      image: image || 'https://images.unsplash.com/photo-1542272604-787c3835535d?auto=format&fit=crop&w=500&q=80',
+      category: category || 'General',
+      subCategory: subCategory || 'General',
+      rating: rating || 4.5
+    });
+
+    const savedProduct = await newProduct.save();
+    res.status(201).json({ message: 'Product added successfully', product: savedProduct });
+  } catch (error) {
+    console.error('Add product error:', error);
+    res.status(500).json({ error: "Failed to add product" });
+  }
+});
+
+// 3. Delete Product (DELETE API for Admin Panel)
+app.delete('/api/products/:id', async (req, res) => {
+  try {
+    const productId = req.params.id;
+    const deletedProduct = await Product.findOneAndDelete({
+      $or: [{ _id: mongoose.isValidObjectId(productId) ? productId : null }, { id: productId }]
+    });
+
+    if (!deletedProduct) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+
+    res.json({ message: "Product deleted successfully", id: productId });
+  } catch (error) {
+    console.error('Delete error:', error);
+    res.status(500).json({ error: "Failed to delete product" });
+  }
+});
+
+// 4. Search Products API
 app.get('/api/products/search', async (req, res) => {
   try {
     const searchQuery = req.query.q;
@@ -95,9 +142,9 @@ app.get('/api/products/search', async (req, res) => {
 
     const products = await Product.find({
       $or: [
-        { name: { $regex: searchQuery,$options: 'i' } },
-        { category: { $regex: searchQuery,$options: 'i' } },
-        { subCategory: { $regex: searchQuery,$options: 'i' } }
+        { name: { $regex: searchQuery, $options: 'i' } },
+        { category: { $regex: searchQuery, $options: 'i' } },
+        { subCategory: { $regex: searchQuery, $options: 'i' } }
       ]
     });
 
