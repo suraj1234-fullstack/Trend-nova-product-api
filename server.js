@@ -117,9 +117,14 @@ app.post('/api/products', async (req, res) => {
 app.delete('/api/products/:id', async (req, res) => {
   try {
     const productId = req.params.id;
-    const deletedProduct = await Product.findOneAndDelete({
-      $or: [{ _id: mongoose.isValidObjectId(productId) ? productId : null }, { id: productId }]
-    });
+    let deletedProduct;
+
+    // Check karte hain ki ID valid MongoDB ObjectId hai ya nahi
+    if (mongoose.isValidObjectId(productId)) {
+      deletedProduct = await Product.findByIdAndDelete(productId);
+    } else {
+      deletedProduct = await Product.findOneAndDelete({ id: Number(productId) || productId });
+    }
 
     if (!deletedProduct) {
       return res.status(404).json({ error: "Product not found" });
@@ -131,7 +136,6 @@ app.delete('/api/products/:id', async (req, res) => {
     res.status(500).json({ error: "Failed to delete product" });
   }
 });
-
 // 4. Search Products API
 app.get('/api/products/search', async (req, res) => {
   try {
