@@ -2,6 +2,8 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import helmet from 'helmet';
+import Razorpay from 'razorpay';
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -160,6 +162,36 @@ app.get('/api/products/search', async (req, res) => {
     res.status(500).json({ error: "Search query failed" });
   }
 });
+// ==========================================
+// --- RAZORPAY PAYMENT INTEGRATION ROUTE ---
+// ==========================================
+
+
+// Razorpay Instance (Yahan apni Test Key ID aur Key Secret daal dena)
+const razorpayInstance = new Razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID || 'rzp_test_TxcEh6GfO2ErwY',
+    key_secret: process.env.RAZORPAY_KEY_SECRET || 'jDL0hAmJr40daHwl4bU5kd4i'
+});
+
+// Order Creation API for Frontend Checkout
+app.post('/api/payment/create-order', async (req, res) => {
+    try {
+        const { amount } = req.body; // Frontend se aane wala total amount (in Rupees)
+        
+        const options = {
+            amount: Number(amount) * 100, // Razorpay paise mein leta hai, isliye 100 se multiply
+            currency: "INR",
+            receipt: "receipt_order_" + Date.now(),
+        };
+
+        const order = await razorpayInstance.orders.create(options);
+        res.json(order);
+    } catch (error) {
+        console.error('Razorpay order creation error:', error);
+        res.status(500).json({ error: "Failed to create Razorpay order" });
+    }
+});
+
 
 app.listen(PORT, () => {
   console.log(`TrendNova Backend Server is running on port ${PORT}`);
